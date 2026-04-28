@@ -6,122 +6,100 @@
 
 <style>
 body{
-  font-family:Arial;
-  background:#0f1115;
-  color:#fff;
   margin:0;
+  font-family:Arial;
+  background:#0c0f14;
+  color:#fff;
   padding:15px;
+}
+
+h2,h3{
+  margin-top:10px;
 }
 
 input,textarea,select{
   width:100%;
-  padding:8px;
+  padding:10px;
   margin-bottom:8px;
+  border:none;
+  border-radius:6px;
+  background:#141a24;
+  color:#fff;
 }
 
 button{
   width:100%;
-  padding:10px;
-  background:#00ffc8;
+  padding:12px;
+  background:#d4af37;
   border:none;
+  border-radius:6px;
+  font-weight:bold;
 }
 
 .card{
-  background:#15181f;
+  background:#141a24;
   padding:10px;
+  border-radius:8px;
   margin-top:10px;
-  border-radius:10px;
 }
 </style>
 </head>
 
 <body>
 
-<h2>Painel Admin</h2>
+<h2>⚙️ Painel Admin</h2>
 
 <h3>Editar Empresa</h3>
 
-<input id="nome">
-<textarea id="desc"></textarea>
-<input type="file" id="banner">
+<input id="nome" placeholder="Nome do site">
+<textarea id="desc" placeholder="Descrição"></textarea>
+<input id="banner" placeholder="URL da imagem do banner">
+
+<hr>
 
 <h3>Adicionar Parceiro</h3>
 
-<input id="pnome">
-<input id="pzap">
-<input id="pinsta">
-<input type="file" id="pimg">
+<input id="pNome" placeholder="Nome">
+<input id="pZap" placeholder="WhatsApp (DDD + número)">
+<input id="pInsta" placeholder="Instagram link">
+<input id="pImg" placeholder="URL da imagem">
 
 <select id="tipo">
   <option value="premium">Premium</option>
   <option value="vip">VIP</option>
 </select>
 
-<button onclick="salvar()">Salvar Tudo</button>
-
-<div id="lista"></div>
+<button onclick="salvar()">Salvar tudo</button>
 
 <script>
-
-let data = JSON.parse(localStorage.getItem("site")) || {
-  nome:"",
-  desc:"",
-  banner:"",
-  premium:[],
-  vip:[]
-};
-
-function toBase64(file, cb){
-  let r = new FileReader();
-  r.onload = e => cb(e.target.result);
-  r.readAsDataURL(file);
-}
-
 function salvar(){
+
+  let data = JSON.parse(localStorage.getItem("site")) || {
+    premium:[],
+    vip:[]
+  };
 
   data.nome = nome.value;
   data.desc = desc.value;
-
-  if(banner.files[0]){
-    toBase64(banner.files[0], img=>{
-      data.banner = img;
-      saveFinal();
-    });
-  }else{
-    saveFinal();
-  }
+  data.banner = banner.value;
 
   let p = {
-    nome:pnome.value,
-    zap:pzap.value,
-    insta:pinsta.value,
-    img:""
+    nome:pNome.value,
+    zap:pZap.value,
+    insta:pInsta.value,
+    img:pImg.value
   };
 
-  let f = pimg.files[0];
-
-  if(f){
-    toBase64(f, img=>{
-      p.img = img;
-      add(p);
-    });
-  }else{
-    add(p);
+  if(tipo.value === "premium"){
+    data.premium.push(p);
+  } else {
+    data.vip.push(p);
   }
-}
 
-function add(p){
-  if(tipo.value=="premium") data.premium.push(p);
-  else data.vip.push(p);
-
-  saveFinal();
-}
-
-function saveFinal(){
   localStorage.setItem("site", JSON.stringify(data));
-  alert("Salvo!");
-}
 
+  alert("Salvo com sucesso!");
+}
 </script>
 
 </body>
