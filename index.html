@@ -5,137 +5,106 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>WSX Parcerias</title>
 
+<!-- Firebase (modo compat pra não quebrar) -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
 <style>
-body {
+body{
   margin:0;
-  font-family: Arial, sans-serif;
-  background:#f5f5f5;
-  color:#222;
+  font-family:Arial;
+  background:#0f1115;
+  color:#fff;
 }
 
 /* HEADER */
-header {
+header{
   display:flex;
   justify-content:space-between;
-  align-items:center;
-  padding:15px 20px;
-  background:#fff;
-  box-shadow:0 2px 5px rgba(0,0,0,0.1);
-}
-
-.menu {
-  font-size:24px;
-  cursor:pointer;
+  padding:15px;
+  background:#111;
 }
 
 /* BANNER */
-.banner {
+.banner{
   height:180px;
-  background:#ccc center/cover;
+  background:#222 center/cover;
 }
 
-/* INFO */
-.info {
+/* TEXTO */
+.info{
   text-align:center;
-  padding:20px;
+  padding:15px;
 }
 
-.info h1 {
-  margin:0;
-}
-
-.info p {
-  color:#666;
-}
-
-/* SEÇÕES */
-.container {
-  padding:20px;
-}
-
-.section {
-  margin-bottom:30px;
-}
-
-.section h2 {
-  margin-bottom:10px;
+/* CONTAINER */
+.container{
+  padding:15px;
 }
 
 /* CARD */
-.card {
+.card{
   display:flex;
-  align-items:center;
-  background:#fff;
-  padding:15px;
+  background:#15181f;
+  padding:12px;
   border-radius:10px;
   margin-bottom:10px;
-  box-shadow:0 2px 5px rgba(0,0,0,0.08);
+  box-shadow:0 0 10px rgba(0,255,200,0.08);
 }
 
-.logo {
+.logo{
   width:50px;
   height:50px;
   border-radius:8px;
-  background:#ddd;
-  margin-right:15px;
+  background:#333;
+  margin-right:10px;
   background-size:cover;
 }
 
-.card h3 {
-  margin:0;
-}
-
-.card p {
-  margin:5px 0;
-  color:#666;
-}
-
-.buttons a {
-  margin-right:5px;
-  text-decoration:none;
-  font-size:13px;
+/* BOTÕES */
+.btn{
   padding:5px 10px;
   border-radius:5px;
+  text-decoration:none;
+  font-size:12px;
 }
 
-.site {
-  background:#222;
-  color:#fff;
-}
+.zap{background:#25D366;color:#000}
+.insta{background:#e1306c;color:#fff}
 
-.insta {
-  background:#e1306c;
-  color:#fff;
+/* PREMIUM destaque */
+.premium{
+  border:1px solid gold;
 }
 
 /* MENU ADM */
-.panel {
+.panel{
   position:fixed;
-  top:0;
   right:-100%;
-  width:250px;
+  top:0;
+  width:260px;
   height:100%;
-  background:#fff;
-  box-shadow:-2px 0 5px rgba(0,0,0,0.2);
+  background:#111;
   padding:15px;
-  transition:0.3s;
+  transition:.3s;
 }
 
-.panel.active {
-  right:0;
-}
+.panel.active{right:0}
 
-input, textarea {
+input,textarea{
   width:100%;
-  margin-bottom:10px;
   padding:8px;
+  margin-bottom:8px;
+  background:#222;
+  border:none;
+  color:#fff;
 }
 
-button {
+button{
   width:100%;
   padding:10px;
-  background:#222;
-  color:#fff;
+  background:#00ffc8;
   border:none;
   cursor:pointer;
 }
@@ -145,106 +114,104 @@ button {
 <body>
 
 <header>
-  <div class="menu" onclick="toggleMenu()">☰</div>
-  <strong id="titulo">WSX Parcerias</strong>
+  <div onclick="toggle()">☰</div>
+  <div id="title">WSX Parcerias</div>
+  <div onclick="login()">Login</div>
 </header>
 
 <div class="banner" id="banner"></div>
 
 <div class="info">
-  <h1 id="nome">Minha Empresa</h1>
-  <p id="desc">Descrição da empresa aqui</p>
+  <h2 id="name">Minha Empresa</h2>
+  <p id="desc">Descrição aqui</p>
 </div>
 
 <div class="container">
-
-<!-- PREMIUM -->
-<div class="section">
-  <h2>⭐ Parceiros Premium</h2>
+  <h3>⭐ Premium</h3>
   <div id="premium"></div>
-</div>
 
-<!-- VIP -->
-<div class="section">
-  <h2>💎 Parceiros VIP</h2>
+  <h3>💎 VIP</h3>
   <div id="vip"></div>
 </div>
 
-</div>
-
-<!-- MENU ADM -->
+<!-- ADM -->
 <div class="panel" id="panel">
-  <h3>Editar Site</h3>
-  <input id="novoNome" placeholder="Nome da empresa">
-  <input id="novoBanner" placeholder="URL do banner">
-  <textarea id="novaDesc" placeholder="Descrição"></textarea>
-  <button onclick="salvar()">Salvar</button>
+  <h3>Editar site</h3>
+  <input id="nName" placeholder="Nome">
+  <input id="nBanner" placeholder="URL banner">
+  <textarea id="nDesc" placeholder="Descrição"></textarea>
+  <button onclick="save()">Salvar</button>
 </div>
 
 <script>
-function toggleMenu(){
+// 🔥 SEU FIREBASE CONFIG (já colocado)
+const firebaseConfig = {
+  apiKey: "AIzaSyCu2jOoDfKhDI0Jy6g4FbOsXs-_SkruLnE",
+  authDomain: "parcerias-a4318.firebaseapp.com",
+  projectId: "parcerias-a4318",
+  storageBucket: "parcerias-a4318.firebasestorage.app",
+  messagingSenderId: "991041310408",
+  appId: "1:991041310408:web:437c3d83562d81405e1ffd"
+};
+
+firebase.initializeApp(firebaseConfig);
+
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+/* LOGIN GOOGLE */
+function login(){
+  const provider = new firebase.auth.GoogleAuthProvider();
+  auth.signInWithPopup(provider);
+}
+
+/* LOGIN STATUS */
+auth.onAuthStateChanged(user=>{
+  if(user){
+    console.log("logado");
+  }
+  load();
+});
+
+/* MENU */
+function toggle(){
   document.getElementById("panel").classList.toggle("active");
 }
 
-// DADOS (pode colocar +50 aqui tranquilo)
-const premiumData = [
-  {nome:"Parceiro 1", desc:"Top parceiro", img:"", site:"#", insta:"#"}
-];
-
-const vipData = [
-  {nome:"Parceiro VIP", desc:"Parceiro fiel", img:"", site:"#", insta:"#"}
-];
-
-// RENDER
-function render(){
-  const premium = document.getElementById("premium");
-  const vip = document.getElementById("vip");
-
-  premium.innerHTML = "";
-  vip.innerHTML = "";
-
-  premiumData.forEach(p => {
-    premium.innerHTML += card(p);
-  });
-
-  vipData.forEach(p => {
-    vip.innerHTML += card(p);
-  });
-}
-
-function card(p){
+/* CARD */
+function card(p, premium=false){
   return `
-  <div class="card">
+  <div class="card ${premium?'premium':''}">
     <div class="logo" style="background-image:url('${p.img}')"></div>
     <div>
-      <h3>${p.nome}</h3>
+      <strong>${p.nome}</strong>
       <p>${p.desc}</p>
-      <div class="buttons">
-        <a href="${p.site}" class="site">Site</a>
-        <a href="${p.insta}" class="insta">Instagram</a>
-      </div>
+      <a class="btn zap" href="https://wa.me/${p.zap}">WhatsApp</a>
+      <a class="btn insta" href="${p.insta}">Instagram</a>
     </div>
   </div>`;
 }
 
-// SALVAR LOCAL
-function salvar(){
-  localStorage.setItem("nome", document.getElementById("novoNome").value);
-  localStorage.setItem("desc", document.getElementById("novaDesc").value);
-  localStorage.setItem("banner", document.getElementById("novoBanner").value);
-  carregar();
+/* SALVAR SITE */
+function save(){
+  db.collection("site").doc("config").set({
+    name:nName.value,
+    desc:nDesc.value,
+    banner:nBanner.value
+  });
 }
 
-// CARREGAR
-function carregar(){
-  document.getElementById("nome").innerText = localStorage.getItem("nome") || "Minha Empresa";
-  document.getElementById("desc").innerText = localStorage.getItem("desc") || "";
-  document.getElementById("banner").style.backgroundImage =
-    `url(${localStorage.getItem("banner") || ""})`;
+/* CARREGAR */
+function load(){
+  db.collection("site").doc("config").get().then(doc=>{
+    if(doc.exists){
+      let d = doc.data();
+      name.innerText = d.name;
+      desc.innerText = d.desc;
+      banner.style.backgroundImage = `url(${d.banner})`;
+    }
+  });
 }
-
-render();
-carregar();
 </script>
 
 </body>
