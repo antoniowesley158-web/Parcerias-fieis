@@ -9,8 +9,7 @@
 body{
   margin:0;
   font-family:Arial;
-  background:#f4f6f8;
-  color:#222;
+  background:#eef1f5;
 }
 
 /* HEADER */
@@ -19,13 +18,14 @@ header{
   justify-content:space-between;
   padding:15px;
   background:#fff;
-  box-shadow:0 2px 6px rgba(0,0,0,0.1);
+  box-shadow:0 2px 10px rgba(0,0,0,0.1);
 }
 
 /* BANNER */
 .banner{
-  height:180px;
+  height:200px;
   background:#ccc center/cover;
+  transition:0.5s;
 }
 
 /* INFO */
@@ -39,29 +39,41 @@ header{
   padding:15px;
 }
 
-/* CARD */
+/* CARD ANIMADO */
 .card{
   display:flex;
   background:#fff;
   padding:12px;
-  border-radius:10px;
+  border-radius:12px;
   margin-bottom:10px;
-  box-shadow:0 2px 6px rgba(0,0,0,0.08);
+  box-shadow:0 3px 10px rgba(0,0,0,0.08);
+  animation:fadeUp 0.4s ease;
+  transition:0.3s;
+}
+
+.card:hover{
+  transform:scale(1.02);
+}
+
+@keyframes fadeUp{
+  from{opacity:0; transform:translateY(10px);}
+  to{opacity:1; transform:translateY(0);}
 }
 
 .logo{
-  width:50px;
-  height:50px;
-  border-radius:8px;
+  width:55px;
+  height:55px;
+  border-radius:10px;
   background:#ddd;
   margin-right:10px;
   background-size:cover;
+  background-position:center;
 }
 
 /* BOTÕES */
 .btn{
   padding:5px 10px;
-  border-radius:5px;
+  border-radius:6px;
   text-decoration:none;
   font-size:12px;
 }
@@ -74,20 +86,22 @@ header{
   border-left:4px solid gold;
 }
 
-/* MENU ADM */
+/* MENU */
 .panel{
   position:fixed;
   right:-100%;
   top:0;
-  width:260px;
+  width:280px;
   height:100%;
   background:#fff;
   padding:15px;
-  transition:.3s;
-  box-shadow:-2px 0 8px rgba(0,0,0,0.2);
+  transition:0.3s;
+  box-shadow:-2px 0 10px rgba(0,0,0,0.2);
 }
 
-.panel.active{right:0}
+.panel.active{
+  right:0;
+}
 
 input,textarea{
   width:100%;
@@ -98,9 +112,21 @@ input,textarea{
 button{
   width:100%;
   padding:10px;
+  border:none;
   background:#111;
   color:#fff;
-  border:none;
+  border-radius:6px;
+}
+
+/* BOTÃO FLUTUANTE */
+.fab{
+  position:fixed;
+  bottom:20px;
+  right:20px;
+  background:#111;
+  color:#fff;
+  padding:15px;
+  border-radius:50%;
   cursor:pointer;
 }
 </style>
@@ -110,67 +136,149 @@ button{
 
 <header>
   <div onclick="toggle()">☰</div>
-  <div id="title">WSX Parcerias</div>
-  <div>Empresa</div>
+  <div>WSX Parcerias</div>
+  <div></div>
 </header>
 
 <div class="banner" id="banner"></div>
 
 <div class="info">
   <h2 id="name">Minha Empresa</h2>
-  <p id="desc">Descrição da empresa aqui</p>
+  <p id="desc">Descrição aqui</p>
 </div>
 
 <div class="container">
 
 <h3>⭐ Premium</h3>
-
-<div class="card premium">
-  <div class="logo"></div>
-  <div>
-    <strong>Parceiro Premium</strong>
-    <p>Descrição aqui</p>
-    <a class="btn zap" href="#">WhatsApp</a>
-    <a class="btn insta" href="#">Instagram</a>
-  </div>
-</div>
+<div id="premium"></div>
 
 <h3>💎 VIP</h3>
-
-<div class="card">
-  <div class="logo"></div>
-  <div>
-    <strong>Parceiro VIP</strong>
-    <p>Descrição aqui</p>
-    <a class="btn zap" href="#">WhatsApp</a>
-    <a class="btn insta" href="#">Instagram</a>
-  </div>
-</div>
+<div id="vip"></div>
 
 </div>
 
-<!-- ADM -->
+<!-- BOTÃO ADD -->
+<div class="fab" onclick="addPartner()">+</div>
+
+<!-- MENU ADM -->
 <div class="panel" id="panel">
-  <h3>Editar site</h3>
+  <h3>Editar Site</h3>
 
-  <input id="nName" placeholder="Nome do site">
-  <input id="nBanner" placeholder="URL do banner">
-  <textarea id="nDesc" placeholder="Descrição"></textarea>
+  <input id="nName" placeholder="Nome">
+  <input type="file" id="bannerFile">
+  <textarea id="nDesc"></textarea>
 
-  <button onclick="save()">Salvar</button>
+  <button onclick="saveSite()">Salvar</button>
+
+  <hr>
+
+  <h3>Adicionar parceiro</h3>
+
+  <input id="pName" placeholder="Nome">
+  <input type="file" id="pImg">
+  <input id="pZap" placeholder="WhatsApp (DDD + número)">
+  <input id="pInsta" placeholder="Instagram URL">
+
+  <select id="pType">
+    <option value="premium">Premium</option>
+    <option value="vip">VIP</option>
+  </select>
+
+  <button onclick="add()">Adicionar</button>
 </div>
 
 <script>
+
+let premium = [];
+let vip = [];
+
 function toggle(){
   document.getElementById("panel").classList.toggle("active");
 }
 
-function save(){
-  document.getElementById("name").innerText = nName.value;
-  document.getElementById("desc").innerText = nDesc.value;
-  document.getElementById("banner").style.backgroundImage =
-    `url(${nBanner.value})`;
+/* CONVERTER IMAGEM */
+function toBase64(file, cb){
+  let reader = new FileReader();
+  reader.onload = e => cb(e.target.result);
+  reader.readAsDataURL(file);
 }
+
+/* SALVAR SITE */
+function saveSite(){
+  name.innerText = nName.value;
+  desc.innerText = nDesc.value;
+
+  let file = bannerFile.files[0];
+  if(file){
+    toBase64(file, img=>{
+      banner.style.backgroundImage = `url(${img})`;
+    });
+  }
+
+  document.getElementById("panel").classList.remove("active");
+}
+
+/* ADICIONAR PARCEIRO */
+function add(){
+  let obj = {
+    nome:pName.value,
+    zap:pZap.value,
+    insta:pInsta.value
+  };
+
+  let file = pImg.files[0];
+
+  if(file){
+    toBase64(file, img=>{
+      obj.img = img;
+      pushPartner(obj);
+    });
+  }else{
+    obj.img = "";
+    pushPartner(obj);
+  }
+}
+
+/* INSERIR */
+function pushPartner(p){
+  if(pType.value=="premium") premium.push(p);
+  else vip.push(p);
+
+  render();
+}
+
+/* RENDER */
+function render(){
+
+  premiumDiv.innerHTML = "";
+  vipDiv.innerHTML = "";
+
+  premium.forEach(p=>{
+    premiumDiv.innerHTML += card(p,true);
+  });
+
+  vip.forEach(p=>{
+    vipDiv.innerHTML += card(p,false);
+  });
+}
+
+/* CARD */
+function card(p, prem){
+  return `
+  <div class="card ${prem?'premium':''}">
+    <div class="logo" style="background-image:url('${p.img}')"></div>
+    <div>
+      <strong>${p.nome}</strong><br>
+      <a class="btn zap" href="https://wa.me/${p.zap}">WhatsApp</a>
+      <a class="btn insta" href="${p.insta}">Instagram</a>
+    </div>
+  </div>`;
+}
+
+function addPartner(){
+  document.getElementById("panel").classList.add("active");
+}
+
 </script>
 
 </body>
