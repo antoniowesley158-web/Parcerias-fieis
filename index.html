@@ -9,112 +9,98 @@
 body {
   margin:0;
   font-family: Arial, sans-serif;
-  background:#0a0a0a;
-  color:#fff;
+  background:#f5f5f5;
+  color:#222;
+}
+
+/* HEADER */
+header {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:15px 20px;
+  background:#fff;
+  box-shadow:0 2px 5px rgba(0,0,0,0.1);
+}
+
+.menu {
+  font-size:24px;
+  cursor:pointer;
 }
 
 /* BANNER */
 .banner {
-  height:220px;
-  background:url('https://via.placeholder.com/1200x300') center/cover;
-  position:relative;
+  height:180px;
+  background:#ccc center/cover;
 }
 
-.banner::after {
-  content:'';
-  position:absolute;
-  width:100%;
-  height:100%;
-  background:rgba(0,0,0,0.7);
-}
-
-.banner-content {
-  position:absolute;
-  top:50%;
-  left:50%;
-  transform:translate(-50%,-50%);
+/* INFO */
+.info {
   text-align:center;
+  padding:20px;
 }
 
-.banner-content h1 {
+.info h1 {
   margin:0;
-  font-size:28px;
-  color:#00ffcc;
 }
 
-.banner-content p {
-  margin-top:5px;
-  color:#ccc;
+.info p {
+  color:#666;
 }
 
-/* CONTAINER */
+/* SEÇÕES */
 .container {
   padding:20px;
 }
 
-/* SEÇÕES */
 .section {
-  margin-bottom:40px;
+  margin-bottom:30px;
 }
 
 .section h2 {
-  border-left:5px solid #00ffcc;
-  padding-left:10px;
+  margin-bottom:10px;
 }
 
 /* CARD */
 .card {
   display:flex;
   align-items:center;
-  background:#151515;
+  background:#fff;
   padding:15px;
-  border-radius:12px;
-  margin-bottom:12px;
-  transition:0.3s;
-}
-
-.card:hover {
-  transform:scale(1.02);
-  box-shadow:0 0 15px rgba(0,255,204,0.3);
-}
-
-/* LOGO */
-.logo {
-  width:60px;
-  height:60px;
   border-radius:10px;
-  background:#222;
+  margin-bottom:10px;
+  box-shadow:0 2px 5px rgba(0,0,0,0.08);
+}
+
+.logo {
+  width:50px;
+  height:50px;
+  border-radius:8px;
+  background:#ddd;
   margin-right:15px;
   background-size:cover;
-  background-position:center;
 }
 
-/* INFO */
-.info h3 {
+.card h3 {
   margin:0;
 }
 
-.info p {
+.card p {
   margin:5px 0;
-  color:#aaa;
+  color:#666;
 }
 
-/* BOTÕES */
-.buttons {
-  margin-top:5px;
-}
-
-.btn {
-  padding:6px 12px;
-  border-radius:6px;
-  text-decoration:none;
-  font-size:14px;
+.buttons a {
   margin-right:5px;
+  text-decoration:none;
+  font-size:13px;
+  padding:5px 10px;
+  border-radius:5px;
 }
 
 .site {
-  background:#00ffcc;
-  color:#000;
+  background:#222;
+  color:#fff;
 }
 
 .insta {
@@ -122,86 +108,144 @@ body {
   color:#fff;
 }
 
-/* PREMIUM */
-.premium {
-  border:1px solid gold;
-  position:relative;
-}
-
-.premium::before {
-  content:'⭐ PREMIUM';
-  position:absolute;
-  top:-10px;
-  right:10px;
-  background:gold;
-  color:#000;
-  font-size:10px;
-  padding:3px 6px;
-  border-radius:5px;
-}
-
-/* FOOTER */
-footer {
-  text-align:center;
+/* MENU ADM */
+.panel {
+  position:fixed;
+  top:0;
+  right:-100%;
+  width:250px;
+  height:100%;
+  background:#fff;
+  box-shadow:-2px 0 5px rgba(0,0,0,0.2);
   padding:15px;
-  background:#111;
-  color:#777;
+  transition:0.3s;
+}
+
+.panel.active {
+  right:0;
+}
+
+input, textarea {
+  width:100%;
+  margin-bottom:10px;
+  padding:8px;
+}
+
+button {
+  width:100%;
+  padding:10px;
+  background:#222;
+  color:#fff;
+  border:none;
+  cursor:pointer;
 }
 </style>
 </head>
 
 <body>
 
-<div class="banner">
-  <div class="banner-content">
-    <h1>WSX Parcerias</h1>
-    <p>Conectando negócios e oportunidades</p>
-  </div>
+<header>
+  <div class="menu" onclick="toggleMenu()">☰</div>
+  <strong id="titulo">WSX Parcerias</strong>
+</header>
+
+<div class="banner" id="banner"></div>
+
+<div class="info">
+  <h1 id="nome">Minha Empresa</h1>
+  <p id="desc">Descrição da empresa aqui</p>
 </div>
 
 <div class="container">
 
-<!-- FIÉIS -->
-<div class="section">
-  <h2>🔹 Parcerias Fiéis</h2>
-
-  <div class="card">
-    <div class="logo" style="background-image:url('https://via.placeholder.com/60')"></div>
-    <div class="info">
-      <h3>Nome do Parceiro</h3>
-      <p>Descrição do parceiro</p>
-      <div class="buttons">
-        <a href="#" class="btn site">Site</a>
-        <a href="#" class="btn insta">Instagram</a>
-      </div>
-    </div>
-  </div>
-
-</div>
-
 <!-- PREMIUM -->
 <div class="section">
   <h2>⭐ Parceiros Premium</h2>
+  <div id="premium"></div>
+</div>
 
-  <div class="card premium">
-    <div class="logo" style="background-image:url('https://via.placeholder.com/60')"></div>
-    <div class="info">
-      <h3>Parceiro Top</h3>
-      <p>Parceria de destaque</p>
+<!-- VIP -->
+<div class="section">
+  <h2>💎 Parceiros VIP</h2>
+  <div id="vip"></div>
+</div>
+
+</div>
+
+<!-- MENU ADM -->
+<div class="panel" id="panel">
+  <h3>Editar Site</h3>
+  <input id="novoNome" placeholder="Nome da empresa">
+  <input id="novoBanner" placeholder="URL do banner">
+  <textarea id="novaDesc" placeholder="Descrição"></textarea>
+  <button onclick="salvar()">Salvar</button>
+</div>
+
+<script>
+function toggleMenu(){
+  document.getElementById("panel").classList.toggle("active");
+}
+
+// DADOS (pode colocar +50 aqui tranquilo)
+const premiumData = [
+  {nome:"Parceiro 1", desc:"Top parceiro", img:"", site:"#", insta:"#"}
+];
+
+const vipData = [
+  {nome:"Parceiro VIP", desc:"Parceiro fiel", img:"", site:"#", insta:"#"}
+];
+
+// RENDER
+function render(){
+  const premium = document.getElementById("premium");
+  const vip = document.getElementById("vip");
+
+  premium.innerHTML = "";
+  vip.innerHTML = "";
+
+  premiumData.forEach(p => {
+    premium.innerHTML += card(p);
+  });
+
+  vipData.forEach(p => {
+    vip.innerHTML += card(p);
+  });
+}
+
+function card(p){
+  return `
+  <div class="card">
+    <div class="logo" style="background-image:url('${p.img}')"></div>
+    <div>
+      <h3>${p.nome}</h3>
+      <p>${p.desc}</p>
       <div class="buttons">
-        <a href="#" class="btn site">Site</a>
-        <a href="#" class="btn insta">Instagram</a>
+        <a href="${p.site}" class="site">Site</a>
+        <a href="${p.insta}" class="insta">Instagram</a>
       </div>
     </div>
-  </div>
+  </div>`;
+}
 
-</div>
+// SALVAR LOCAL
+function salvar(){
+  localStorage.setItem("nome", document.getElementById("novoNome").value);
+  localStorage.setItem("desc", document.getElementById("novaDesc").value);
+  localStorage.setItem("banner", document.getElementById("novoBanner").value);
+  carregar();
+}
 
-</div>
+// CARREGAR
+function carregar(){
+  document.getElementById("nome").innerText = localStorage.getItem("nome") || "Minha Empresa";
+  document.getElementById("desc").innerText = localStorage.getItem("desc") || "";
+  document.getElementById("banner").style.backgroundImage =
+    `url(${localStorage.getItem("banner") || ""})`;
+}
 
-<footer>
-© 2026 WSX - Todos os direitos reservados
-</footer>
+render();
+carregar();
+</script>
 
 </body>
 </html>
