@@ -3,39 +3,53 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Parcerias WSX</title>
+<title>WSX Parcerias</title>
 
 <style>
 body{
   margin:0;
   font-family:Arial;
-  background:#0f1115;
+  background:linear-gradient(180deg,#0b0f14,#0f1115);
   color:#fff;
 }
 
+/* BANNER */
 .banner{
-  height:200px;
-  background:#222 center/cover;
-  transition:0.5s;
+  height:220px;
+  background:#1a1f2b center/cover;
+  position:relative;
 }
 
+/* INFO */
 .info{
   text-align:center;
-  padding:15px;
+  padding:20px;
 }
 
+/* CONTAINER */
 .container{
   padding:15px;
 }
 
+/* TITULOS */
+h3{
+  margin:20px 0 10px;
+  color:#aaa;
+  font-weight:normal;
+}
+
+/* CARD GLASS */
 .card{
   display:flex;
-  background:#15181f;
+  align-items:center;
+  background:rgba(255,255,255,0.05);
+  backdrop-filter:blur(8px);
+  border:1px solid rgba(255,255,255,0.08);
   padding:12px;
-  border-radius:12px;
-  margin-bottom:10px;
+  border-radius:14px;
+  margin-bottom:12px;
+  box-shadow:0 8px 20px rgba(0,0,0,0.4);
   animation:fade 0.4s ease;
-  box-shadow:0 0 10px rgba(0,255,200,0.08);
 }
 
 @keyframes fade{
@@ -43,27 +57,44 @@ body{
   to{opacity:1;transform:translateY(0);}
 }
 
+/* LOGO */
 .logo{
   width:55px;
   height:55px;
-  border-radius:10px;
-  background:#333;
-  margin-right:10px;
+  border-radius:12px;
+  margin-right:12px;
+  background:#222;
   background-size:cover;
 }
 
+/* TEXTOS */
+.card strong{
+  font-size:15px;
+}
+
+.card p{
+  margin:3px 0 0;
+  font-size:13px;
+  color:#aaa;
+}
+
+/* BOTÕES */
 .btn{
+  display:inline-block;
+  margin-top:5px;
   padding:5px 10px;
-  border-radius:5px;
-  text-decoration:none;
+  border-radius:8px;
   font-size:12px;
+  text-decoration:none;
 }
 
 .zap{background:#25D366;color:#000}
 .insta{background:#e1306c;color:#fff}
 
+/* PREMIUM destaque */
 .premium{
-  border-left:4px solid gold;
+  border:1px solid rgba(255,215,0,0.4);
+  box-shadow:0 0 15px rgba(255,215,0,0.1);
 }
 </style>
 </head>
@@ -74,22 +105,24 @@ body{
 
 <div class="info">
   <h2 id="nome">Empresa</h2>
-  <p id="desc">Descrição</p>
+  <p id="desc">Descrição da empresa</p>
 </div>
 
 <div class="container">
-  <h3>⭐ Premium</h3>
-  <div id="premium"></div>
 
-  <h3>💎 VIP</h3>
-  <div id="vip"></div>
+<h3>⭐ Premium</h3>
+<div id="premium"></div>
+
+<h3>💎 VIP</h3>
+<div id="vip"></div>
+
 </div>
 
 <script>
 function load(){
   let data = JSON.parse(localStorage.getItem("site")) || {
     nome:"Empresa",
-    desc:"Descrição",
+    desc:"",
     banner:"",
     premium:[],
     vip:[]
@@ -116,7 +149,8 @@ function card(p, prem){
   <div class="card ${prem?'premium':''}">
     <div class="logo" style="background-image:url('${p.img}')"></div>
     <div>
-      <strong>${p.nome}</strong><br>
+      <strong>${p.nome}</strong>
+      <p>${p.desc || ""}</p>
       <a class="btn zap" href="https://wa.me/${p.zap}">WhatsApp</a>
       <a class="btn insta" href="${p.insta}">Instagram</a>
     </div>
