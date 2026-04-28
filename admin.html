@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Admin WSX</title>
+
+<style>
+body{
+  font-family:Arial;
+  background:#0f1115;
+  color:#fff;
+  margin:0;
+  padding:15px;
+}
+
+input,textarea,select{
+  width:100%;
+  padding:8px;
+  margin-bottom:8px;
+}
+
+button{
+  width:100%;
+  padding:10px;
+  background:#00ffc8;
+  border:none;
+}
+
+.card{
+  background:#15181f;
+  padding:10px;
+  margin-top:10px;
+  border-radius:10px;
+}
+</style>
+</head>
+
+<body>
+
+<h2>Painel Admin</h2>
+
+<h3>Editar Empresa</h3>
+
+<input id="nome">
+<textarea id="desc"></textarea>
+<input type="file" id="banner">
+
+<h3>Adicionar Parceiro</h3>
+
+<input id="pnome">
+<input id="pzap">
+<input id="pinsta">
+<input type="file" id="pimg">
+
+<select id="tipo">
+  <option value="premium">Premium</option>
+  <option value="vip">VIP</option>
+</select>
+
+<button onclick="salvar()">Salvar Tudo</button>
+
+<div id="lista"></div>
+
+<script>
+
+let data = JSON.parse(localStorage.getItem("site")) || {
+  nome:"",
+  desc:"",
+  banner:"",
+  premium:[],
+  vip:[]
+};
+
+function toBase64(file, cb){
+  let r = new FileReader();
+  r.onload = e => cb(e.target.result);
+  r.readAsDataURL(file);
+}
+
+function salvar(){
+
+  data.nome = nome.value;
+  data.desc = desc.value;
+
+  if(banner.files[0]){
+    toBase64(banner.files[0], img=>{
+      data.banner = img;
+      saveFinal();
+    });
+  }else{
+    saveFinal();
+  }
+
+  let p = {
+    nome:pnome.value,
+    zap:pzap.value,
+    insta:pinsta.value,
+    img:""
+  };
+
+  let f = pimg.files[0];
+
+  if(f){
+    toBase64(f, img=>{
+      p.img = img;
+      add(p);
+    });
+  }else{
+    add(p);
+  }
+}
+
+function add(p){
+  if(tipo.value=="premium") data.premium.push(p);
+  else data.vip.push(p);
+
+  saveFinal();
+}
+
+function saveFinal(){
+  localStorage.setItem("site", JSON.stringify(data));
+  alert("Salvo!");
+}
+
+</script>
+
+</body>
+</html>
